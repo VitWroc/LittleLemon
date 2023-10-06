@@ -1,8 +1,26 @@
 #-------------------------Was the GetMaxQuantity() procedure properly implemented?
-CREATE PROCEDURE GetMaxQuantity()
-SELECT max(quantity) AS "Max Quantity in Order" FROM orders
+use LittleLemonDB;
+drop procedure if exists GetMaxQuantity;
+create procedure GetMaxQuantity() select max(Quantity) as GetMaxQuantity from Orders;
+call GetMaxQuantity();
 #-------------------------Was the ManageBooking() procedure properly implemented?
+CREATE PROCEDURE LittleLemonDB.ManageBooking(IN booking_date DATE, IN table_number INT)
+BEGIN
+    DECLARE table_status VARCHAR(50);
 
+    SELECT COUNT(*) INTO @table_count
+    FROM `LittleLemonDB`.`Bookings`
+    WHERE `Date` = booking_date AND `TableNumber` = table_number;
+
+    IF (@table_count > 0) THEN
+        SET table_status = 'Table is already booked.';
+    ELSE
+        SET table_status = 'Table is available.';
+    END IF;
+
+    SELECT table_status AS 'Table Status';
+END;
+CALL ManageBooking('2023-10-06', 3);
 #-------------------------Was the UpdateBooking() procedure properly implemented?
 CREATE PROCEDURE `LittleLemonDB`.`UpdateBooking`(
     IN booking_id_to_update INT, 
@@ -39,7 +57,14 @@ BEGIN
     SELECT 'New booking added' AS 'Confirmation';
 END;
 #-------------------------Was the CancelBooking() procedure properly implemented?
-CREATE PROCEDURE CancelOrder(IN orderId INT)
-BEGIN
-    DELETE FROM Orders WHERE OrderID = orderId;
-END 
+use LittleLemonDB;
+drop procedure if exists CancelOrder;
+delimiter \\
+create procedure CancelOrder(Orderid int) 
+begin
+delete from Orders where OrderID=Orderid;
+select concat("Order ", OrderID, " is cancelled") as Confirmation;
+end\\
+delimiter ;
+
+call CancelOrder(5)
