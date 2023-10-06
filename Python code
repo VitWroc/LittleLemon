@@ -1,9 +1,45 @@
-Was the GetMaxQuantity() procedure properly implemented?
+#-------------------------Was the GetMaxQuantity() procedure properly implemented?
+CREATE PROCEDURE GetMaxQuantity()
+SELECT max(quantity) AS "Max Quantity in Order" FROM orders
+#-------------------------Was the ManageBooking() procedure properly implemented?
 
-Was the ManageBooking() procedure properly implemented?
+#-------------------------Was the UpdateBooking() procedure properly implemented?
+CREATE PROCEDURE `LittleLemonDB`.`UpdateBooking`(
+    IN booking_id_to_update INT, 
+    IN new_booking_date DATE)
+BEGIN
+    UPDATE `LittleLemonDB`.`Bookings`
+    SET `Date` = new_booking_date
+    WHERE `BookingID` = booking_id_to_update;
 
-Was the UpdateBooking() procedure properly implemented?
+    SELECT CONCAT('Booking ', booking_id_to_update, ' updated') AS 'Confirmation';
+END;
+#-------------------------Was the AddBooking() procedure properly implemented?
+CREATE PROCEDURE `LittleLemonDB`.`AddBooking`(
+    IN new_booking_id INT, 
+    IN new_customer_id INT, 
+    IN new_booking_date DATE, 
+    IN new_table_number INT, 
+    IN new_staff_id INT)
+BEGIN
+    INSERT INTO `LittleLemonDB`.`Bookings`(
+        `BookingID`, 
+        `CustomerID`, 
+        `Date`, 
+        `TableNumber`, 
+        `StaffID`)
+    VALUES(
+        new_booking_id, 
+        new_customer_id, 
+        new_booking_date, 
+        new_table_number,
+        new_staff_id
+    );
 
-Was the AddBooking() procedure properly implemented?
-
-Was the CancelBooking() procedure properly implemented?
+    SELECT 'New booking added' AS 'Confirmation';
+END;
+#-------------------------Was the CancelBooking() procedure properly implemented?
+CREATE PROCEDURE CancelOrder(IN orderId INT)
+BEGIN
+    DELETE FROM Orders WHERE OrderID = orderId;
+END 
